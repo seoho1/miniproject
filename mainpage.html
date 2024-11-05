@@ -5,12 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         /* 기본 스타일 */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            height: 100vh; /* 화면 전체 높이를 사용 */
+            display: flex; /* flexbox 사용 */
+            justify-content: center; /* 가로 중앙 정렬 */
+            align-items: center; /* 세로 중앙 정렬 */
+            flex-direction: column;
         }
 
         /* 네비게이션 바 스타일 */
@@ -38,6 +44,17 @@
             text-decoration: none;
             /* 링크 밑줄 제거 */
         }
+
+        .mainbox {
+            width: 500px;  
+            height: 400px;    
+            background-color: #fff; 
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+            padding: 20px; 
+            margin-bottom:80px;          
+        }
+      
+
     </style>
 </head>
 
@@ -51,6 +68,12 @@
     <nav>
         <a href="#home">스파르타위키</a>
     </nav>
+    <div class="mainbox">
+        <div class="logo">
+           <img src=""> <!--로고를 넣어주세요.-->
+        </div>
+     </div>
+    <button type="button" class="btn btn-danger" href="...">들어가기</button> <!-- 버튼을 누르면 2번째 페이지로 넘어갑니다 -->
 </body>
 
 </html>
