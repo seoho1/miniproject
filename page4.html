@@ -71,7 +71,7 @@
     </style>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, doc, updateDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getFirestore, doc, updateDoc, getDocs, collection, query, where } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBAvytCDn6UO51ZReRAqJaWTKZtBPMFI-A",
@@ -86,8 +86,9 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        let currentDocId = null;
+        let currentDocId = null;  // Firebase 문서 ID를 추적
 
+        // 입력 필드를 업데이트하는 함수
         function updateInputs(data) {
             $('#name').val(data.name);
             $('#age').val(data.age);
@@ -96,6 +97,7 @@
             $('#speciality').val(data.speciality);
         }
 
+        // Firebase에서 데이터 가져오기
         async function fetchData() {
             let docs = await getDocs(collection(db, "impomation"));
             docs.forEach((doc) => {
@@ -119,6 +121,7 @@
             });
         }
 
+        // 수정 버튼 클릭 시 Firebase 문서 업데이트
         $("#postbtn").click(async function () {
             if (!currentDocId) {
                 alert("수정할 데이터를 선택해주세요.");
@@ -143,36 +146,25 @@
             alert('수정 완료!');
         });
 
+        // 버튼 클릭 시 Firebase에서 해당 사람의 정보를 불러오고, 문서 ID 설정
         $(document).ready(function () {
-            $("section button").click(function () {
+            $("section button").click(async function () {
                 let personName = $(this).text();
-                let selectedPersonData;
+                let docRef = query(collection(db, "impomation"), where("name", "==", personName));
+                let querySnapshot = await getDocs(docRef);
+                
+                if (!querySnapshot.empty) {
+                    let personDoc = querySnapshot.docs[0]; // 첫 번째 문서 가져오기
+                    let selectedPersonData = personDoc.data();
+                    currentDocId = personDoc.id;  // Firebase 문서 ID 저장
 
-                switch (personName) {
-                    case '황서호':
-                        selectedPersonData = { name: '황서호', age: '25', gender: '남', hobby: '독서', speciality: '프로그램' };
-                        break;
-                    case '김다빈':
-                        selectedPersonData = { name: '김다빈', age: '23', gender: '여', hobby: '영화감상', speciality: '디자인' };
-                        break;
-                    case '이수호':
-                        selectedPersonData = { name: '이수호', age: '27', gender: '남', hobby: '게임', speciality: '수학' };
-                        break;
-                    case '신가을':
-                        selectedPersonData = { name: '신가을', age: '22', gender: '여', hobby: '여행', speciality: '언어' };
-                        break;
-                    case '오민수':
-                        selectedPersonData = { name: '오민수', age: '24', gender: '남', hobby: '운동', speciality: '경제학' };
-                        break;
-                    default:
-                        selectedPersonData = { name: '', age: '', gender: '', hobby: '', speciality: '' };
+                    updateInputs(selectedPersonData);
                 }
-
-                updateInputs(selectedPersonData);
-
-                currentDocId = personName;
             });
         });
+
+        // 페이지 로드 시 Firebase에서 데이터 불러오기
+        fetchData();
     </script>
 </head>
 
