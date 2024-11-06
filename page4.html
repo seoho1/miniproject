@@ -35,20 +35,6 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        textarea {
-            width: 100%;
-            height: 200px;
-            margin-bottom: 20px;
-            font-family: monospace;
-            font-size: 14px;
-        }
-
-        .input-group {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
         .input-group input {
             margin-right: 10px;
             padding: 5px;
@@ -68,6 +54,10 @@
         .input-group button:hover {
             background-color: #45a049;
         }
+
+        button {
+            margin: 10px;
+        }
     </style>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
@@ -86,7 +76,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        let currentDocId = null;  // Firebase 문서 ID를 추적
+        let currentDocId = null;
 
         // 입력 필드를 업데이트하는 함수
         function updateInputs(data) {
@@ -99,26 +89,17 @@
 
         // Firebase에서 데이터 가져오기
         async function fetchData() {
-            let docs = await getDocs(collection(db, "impomation"));
-            docs.forEach((doc) => {
-                let row = doc.data();
-                let name = row['name'];
-                let age = row['age'];
-                let gender = row['gender'];
-                let hobby = row['hobby'];
-                let speciality = row['speciality'];
+            const people = ['황서호', '김다빈', '이수호', '신가을', '오민수'];
+            for (let person of people) {
+                let docRef = query(collection(db, "impomation"), where("name", "==", person));
+                let querySnapshot = await getDocs(docRef);
 
-                let temp_html = `
-                <div class="center-box">
-                    <p>이름 : <input type="text" id="name" value="${name}" disabled/></p>
-                    <p>나이 : <input type="text" id="age" value="${age}" disabled/></p>
-                    <p>성별 : <input type="text" id="gender" value="${gender}" disabled/></p>
-                    <p>취미 : <input type="text" id="hobby" value="${hobby}" disabled/></p>
-                    <p>특기 : <input type="text" id="speciality" value="${speciality}" disabled/></p>
-                </div>`;
-
-                $('#id').append(temp_html);
-            });
+                if (!querySnapshot.empty) {
+                    $(`#btn-${person}`).show(); // 데이터가 있으면 버튼을 보여준다
+                } else {
+                    $(`#btn-${person}`).hide(); // 데이터가 없으면 버튼을 숨긴다
+                }
+            }
         }
 
         // 수정 버튼 클릭 시 Firebase 문서 업데이트
@@ -152,7 +133,7 @@
                 let personName = $(this).text();
                 let docRef = query(collection(db, "impomation"), where("name", "==", personName));
                 let querySnapshot = await getDocs(docRef);
-                
+
                 if (!querySnapshot.empty) {
                     let personDoc = querySnapshot.docs[0]; // 첫 번째 문서 가져오기
                     let selectedPersonData = personDoc.data();
@@ -161,10 +142,9 @@
                     updateInputs(selectedPersonData);
                 }
             });
-        });
 
-        // 페이지 로드 시 Firebase에서 데이터 불러오기
-        fetchData();
+            fetchData(); // 페이지 로드 시 Firebase 데이터 확인
+        });
     </script>
 </head>
 
@@ -175,11 +155,11 @@
     <div class="flex-container">
         <div class="center-box">
             <section>
-                <button>황서호</button>
-                <button>김다빈</button>
-                <button>이수호</button>
-                <button>신가을</button>
-                <button>오민수</button>
+                <button id="btn-황서호" style="display: none;">황서호</button>
+                <button id="btn-김다빈" style="display: none;">김다빈</button>
+                <button id="btn-이수호" style="display: none;">이수호</button>
+                <button id="btn-신가을" style="display: none;">신가을</button>
+                <button id="btn-오민수" style="display: none;">오민수</button>
             </section>
             <p>이름 : <input type="text" id="name" /></p>
             <p>나이 : <input type="text" id="age" /></p>
