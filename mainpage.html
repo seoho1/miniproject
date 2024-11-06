@@ -5,50 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
-    <style>
-        /* 기본 스타일 */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* 네비게이션 바 스타일 */
-        nav {
-            background-color: red;
-            /* 배경색 */
-            overflow: hidden;
-            /* 내용이 넘칠 때 처리 */
-            width: 100%;
-            position: fixed;
-            top: 0;  /* 상단에 위치 */
-        }
-
-        nav a {
-            float: left;
-            /* 수평 정렬 */
-            display: block;
-            /* 블록으로 만들기 */
-            color: white;
-            /* 텍스트 색상 */
-            text-align: center;
-            /* 텍스트 가운데 정렬 */
-            padding: 14px 20px;
-            /* 패딩 */
-            text-decoration: none;
-            /* 링크 밑줄 제거 */
-        }
-    </style>
-</head>
-<!DOCTYPE html>
-<html lang="ko">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gowun+Dodum&display=swap');
         /* 기본 스타일 */
         body {
             font-family: Arial, sans-serif;
@@ -73,6 +32,7 @@
         }
 
         nav a {
+            font-family: "Black Han Sans", sans-serif;
             float: left;
             /* 수평 정렬 */
             display: block;
@@ -89,8 +49,10 @@
 
         .mainbox {
             width: 500px;  
-            height: 400px;    
-            background-color: #fff; 
+            height: 350px;    
+            background-image: url('https://cdn-upload.miniintern.com/42581/3091d6df-ce33-498d-a1cb-32b0d5473655/teamspartalogomain.png');
+            background-position: center;
+            background-size: 500px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
             padding: 20px; 
             margin-bottom:80px;          
@@ -98,6 +60,7 @@
       
 
     </style>
+
 </head>
 
 <body>
@@ -112,7 +75,7 @@
     </nav>
     <div class="mainbox">
         <div class="logo">
-           <img src=""> <!--로고를 넣어주세요.-->
+           <img src=""> 
         </div>
      </div>
     <button type="button" class="btn btn-danger" href="...">들어가기</button> <!-- 버튼을 누르면 2번째 페이지로 넘어갑니다 -->
