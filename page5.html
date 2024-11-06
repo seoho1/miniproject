@@ -21,7 +21,8 @@
             /* 내용이 넘칠 때 처리 */
             width: 100%;
             position: fixed;
-            top: 0; /* 상단에 위치 */
+            top: 0;
+            /* 상단에 위치 */
         }
 
         nav a {
@@ -40,37 +41,110 @@
         }
 
         header {
-            margin-top: 60px; /* 네비게이션 바 높이만큼 아래로 이동 */
+            margin-top: 60px;
+            /* 네비게이션 바 높이만큼 아래로 이동 */
         }
 
         .box {
             width: 800px;
             height: 800px;
-            border: 2px solid #000; /* 테두리 */
-            background-color: #f0f0f0; /* 배경색 */
-            padding: 20px; /* 내부 여백 */
+            border: 2px solid #000;
+            /* 테두리 */
+            background-color: #f0f0f0;
+            /* 배경색 */
+            padding: 20px;
+            /* 내부 여백 */
             margin: 20px auto 0px auto;
-            margin-top: 60px; /* 박스의 상단 여백 */
-            display: flex;
-            justify-content: space-between; /* 좌우 정렬 */
-            align-items: flex-start; /* 상단 정렬 */
+            margin-top: 60px;
+            /* 박스의 상단 여백 */
+            display: block;
+            justify-content: space-between;
+            /* 좌우 정렬 */
+            align-items: flex-start;
+            /* 상단 정렬 */
         }
 
         .box h2 {
-            margin: 0; /* 기본 여백 제거 */
-            font-size: 24px; /* 제목 크기 조정 */
+            margin: 0;
+            /* 기본 여백 제거 */
+            font-size: 24px;
+            /* 제목 크기 조정 */
         }
 
         /* 버튼 스타일 */
         .box button {
-            margin-left: auto; /* 버튼을 오른쪽으로 이동 */
-            padding: 10px 20px; /* 버튼의 패딩을 키워 크기 증가 */
-            font-size: 16px; /* 버튼의 글자 크기 증가 */
-            border: 1px solid #000; /* 버튼 테두리 */
-            border-radius: 5px; /* 버튼 모서리 둥글게 */
-            cursor: pointer; /* 마우스 커서 포인터로 변경 */
+            margin-left: auto;
+            /* 버튼을 오른쪽으로 이동 */
+            padding: 10px 20px;
+            /* 버튼의 패딩을 키워 크기 증가 */
+            font-size: 16px;
+            /* 버튼의 글자 크기 증가 */
+            border: 1px solid #000;
+            /* 버튼 테두리 */
+            border-radius: 5px;
+            /* 버튼 모서리 둥글게 */
+            cursor: pointer;
+            /* 마우스 커서 포인터로 변경 */
+        }
+
+        .member-list {
+            margin-top: 20px;
+        }
+
+        .member {
+            background-color: #fff;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            text-align: left;
+            /* 텍스트 왼쪽 정렬 */
+        }
+
+        .member h3 {
+            margin: 0;
+            font-size: 18px;
         }
     </style>
+    <script type="module">
+        // Firebase SDK 라이브러리 가져오기
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyBAvytCDn6UO51ZReRAqJaWTKZtBPMFI-A",
+            authDomain: "sparta-2b738.firebaseapp.com",
+            projectId: "sparta-2b738",
+            storageBucket: "sparta-2b738.firebasestorage.app",
+            messagingSenderId: "481874362568",
+            appId: "1:481874362568:web:a1b01807f7fa3d62eda5fd",
+            measurementId: "G-FJ8CX7F0Z5"
+        };
+
+        // Firebase 인스턴스 초기화
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // 페이지 로딩 시 Firestore에서 데이터 가져오기
+        window.onload = async function () {
+            const querySnapshot = await getDocs(collection(db, "impomation"));
+            const memberListContainer = document.getElementById("member-list");
+
+            querySnapshot.forEach((doc) => {
+                const member = doc.data();
+                const memberDiv = document.createElement("div");
+                memberDiv.classList.add("member");
+
+                // 이름만 출력하도록 수정
+                memberDiv.innerHTML = `
+                    <h3>${member.name}</h3>
+                `;
+
+                memberListContainer.appendChild(memberDiv);
+            });
+        };
+    </script>
 </head>
 
 <body>
@@ -80,11 +154,15 @@
         <a href="#home">스파르타위키</a>
     </nav>
 
-
+    <!-- 멤버 리스트 박스 -->
     <div class="box">
         <h2>멤버 리스트</h2>
-        <button type="button" class="btn btn-outline-dark">삭제</button>
+        <button type="button" class="btn btn-outline-dark">삭제하기</button>
+
+        <!-- 멤버 리스트를 표시할 영역 -->
+        <div id="member-list" class="member-list"></div>
     </div>
 
 </body>
+
 </html>
