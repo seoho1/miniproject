@@ -131,7 +131,12 @@
     </style>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+<<<<<<< HEAD
         import { getFirestore, doc, updateDoc, getDocs, collection, query, where } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+=======
+        import { getFirestore, collection, query, getDocs, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
+>>>>>>> 5c698ca (:bug:찐찐막)
 
         const firebaseConfig = {
             apiKey: "AIzaSyBAvytCDn6UO51ZReRAqJaWTKZtBPMFI-A",
@@ -145,6 +150,7 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+<<<<<<< HEAD
 
         let currentDocId = null;
 
@@ -156,6 +162,11 @@
             $('#hobby').val(data.hobby);
             $('#speciality').val(data.speciality);
         }
+=======
+        const storage = getStorage(app);
+
+        let currentDocId = null; // 현재 선택된 문서의 ID를 저장할 변수
+>>>>>>> 5c698ca (:bug:찐찐막)
 
         // Firebase에서 데이터 가져오기
         async function fetchData() {
@@ -170,6 +181,16 @@
                     $(`#btn-${person}`).hide(); // 데이터가 없으면 버튼을 숨긴다
                 }
             }
+        }
+
+        // 입력 필드를 업데이트하는 함수
+        function updateInputs(data) {
+            $('#name').val(data.name);
+            $('#age').val(data.age);
+            $('#gender').val(data.gender);
+            $('#hobby').val(data.hobby);
+            $('#speciality').val(data.speciality);
+            $('#tmi').val(data.tmi);
         }
 
         // 수정 버튼 클릭 시 Firebase 문서 업데이트
