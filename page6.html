@@ -9,6 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gowun+Dodum&display=swap');
+
         /* 기본 스타일 */
         body {
             font-family: "Gowun Dodum", sans-serif;
@@ -23,13 +24,11 @@
             align-items: center;
             /* 세로 중앙 정렬 */
             flex-direction: column;
-           
-
         }
 
         /* 네비게이션 바 스타일 */
         nav {
-            background: linear-gradient(to right,#ff7f7f, #dc3545);
+            background: linear-gradient(to right, #ff7f7f, #dc3545);
             /* 배경색 */
             overflow: hidden;
             /* 내용이 넘칠 때 처리 */
@@ -42,7 +41,7 @@
 
         nav a {
             font-family: "Black Han Sans", sans-serif;
-            display:  flex;
+            display: flex;
             /* 블록으로 만들기 */
             color: white;
             /* 텍스트 색상 */
@@ -70,42 +69,115 @@
             justify-content: center;
         }
 
-        .Search .form-control{
+        .Search .form-control {
             margin-top: 70px;
             width: 760px;
-            height: 20;
             padding: 20px;
             font-size: 19px;
         }
 
         .box1 {
-    width: 800px;
-    height: 1000px;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    margin: 0 auto; 
-    margin-top: 20px;
+            width: 800px;
+            height: 1000px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            margin: 0 auto;
+            margin-top: 20px;
+            padding: 20px;
         }
 
+        .result {
+            margin-top: 20px;
+        }
+
+        .result p {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
     </style>
+
+    <script type="module">
+        // Firebase SDK 라이브러리 가져오기
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        // Firebase 구성
+        const firebaseConfig = {
+            apiKey: "AIzaSyBAvytCDn6UO51ZReRAqJaWTKZtBPMFI-A",
+            authDomain: "sparta-2b738.firebaseapp.com",
+            projectId: "sparta-2b738",
+            storageBucket: "sparta-2b738.firebasestorage.app",
+            messagingSenderId: "481874362568",
+            appId: "1:481874362568:web:a1b01807f7fa3d62eda5fd",
+            measurementId: "G-FJ8CX7F0Z5"
+        };
+
+        // Firebase 초기화
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // 검색된 데이터를 보여주는 함수
+        async function searchData(queryText) {
+            // 'impomation' 컬렉션에서 이름으로 검색
+            const q = query(collection(db, "impomation"), where("name", "==", queryText));
+            const querySnapshot = await getDocs(q);
+
+            const resultsContainer = $('#searchResults');
+            resultsContainer.empty(); // 기존 결과 초기화
+
+            if (!querySnapshot.empty) {
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
+                    const personInfo = `
+                        <div class="result">
+                            <p><strong>이름:</strong> ${data.name}</p>
+                            <p><strong>나이:</strong> ${data.age}</p>
+                            <p><strong>성별:</strong> ${data.gender}</p>
+                            <p><strong>취미:</strong> ${data.hobby}</p>
+                            <p><strong>특기:</strong> ${data.speciality}</p>
+                        </div>
+                    `;
+                    resultsContainer.append(personInfo);
+                });
+            } else {
+                resultsContainer.append("<p>검색 결과가 없습니다.</p>");
+            }
+        }
+
+        // 검색 입력창에서 입력을 감지하여 검색 함수 호출
+        $(document).ready(function () {
+            // Enter 키를 눌렀을 때 검색을 실행
+            $('#title').on('keypress', function (e) {
+                if (e.which === 13) { // Enter 키 코드 13
+                    const searchQuery = $(this).val().trim(); // 검색어
+                    if (searchQuery) {
+                        searchData(searchQuery); // 검색 실행
+                    } else {
+                        $('#searchResults').empty(); // 검색어가 없으면 결과 초기화
+                    }
+                }
+            });
+        });
+    </script>
+
 </head>
 
 <body>
     <nav>
-        <nav>
-            <a href="mainpage.html"> <img
-                    src="https://cdn-upload.miniintern.com/42581/3091d6df-ce33-498d-a1cb-32b0d5473655/teamspartalogomain.png"
-                    alt="이모티콘" class="emoji"> 스파르타위키</a>
-        </nav>
+        <a href="mainpage.html"> <img
+                src="https://cdn-upload.miniintern.com/42581/3091d6df-ce33-498d-a1cb-32b0d5473655/teamspartalogomain.png"
+                alt="이모티콘" class="emoji"> 스파르타위키</a>
     </nav>
-        <div class="Search">
-            <input type="email" class="form-control" id="title" placeholder="멤버 검색">
-        </div>
 
-        <div class="box1">
-        <p> tip.위 검색창에 멤버의 이름을 검색해주세요.</p>
-        </div>
+    <div class="Search">
+        <input type="text" class="form-control" id="title" placeholder="멤버 검색">
+    </div>
 
+    <div class="box1">
+        <p>tip. 위 검색창에 멤버의 이름을 검색해주세요.</p>
+
+        <div id="searchResults"></div> <!-- 검색 결과가 표시될 영역 -->
+    </div>
 </body>
 
 </html>
