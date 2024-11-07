@@ -15,126 +15,114 @@
             margin: 0;
             padding: 0;
             height: 100vh;
-            /* 화면 전체 높이를 사용 */
             display: flex;
-            /* flexbox 사용 */
             justify-content: center;
-            /* 가로 중앙 정렬 */
             align-items: center;
-            /* 세로 중앙 정렬 */
             flex-direction: column;
-           
-
         }
 
         /* 네비게이션 바 스타일 */
         nav {
-            background: linear-gradient(to right,#ff7f7f, #dc3545);
-            /* 배경색 */
-            overflow: hidden;
-            /* 내용이 넘칠 때 처리 */
+            background: linear-gradient(to right, #ff7f7f, #dc3545);
             width: 100%;
             position: fixed;
             top: 0;
             font-size: 28px;
-            /* 상단에 위치 */
         }
 
         nav a {
             font-family: "Black Han Sans", sans-serif;
-            display:  flex;
-            /* 블록으로 만들기 */
+            display: flex;
             color: white;
-            /* 텍스트 색상 */
             text-align: center;
-            /* 텍스트 가운데 정렬 */
             padding: 14px 20px;
-            /* 패딩 */
             text-decoration: none;
-            /* 링크 밑줄 제거 */
             margin-left: 50px;
         }
 
         nav img {
             width: 30px;
-            /* 이미지 크기 조정 */
             height: 30px;
-            /* 이미지 크기 조정 */
             margin-left: 10px;
             margin-right: 10px;
-            /* 텍스트와 이미지 간 간격 */
         }
 
         header {
             margin-top: 60px;
-            /* 네비게이션 바 높이만큼 아래로 이동 */
         }
 
         .box {
-            width: 800px;
-            height: 800px;
-            border: 2px solid #000;
-            /* 테두리 */
-            background-color: #f0f0f0;
-            /* 배경색 */
+            width: 1200px; /* 박스 너비 늘리기 */
+            height: auto; /* 박스 높이를 자동으로 조정 */
+            background-color:#ffff;
             padding: 20px;
-            /* 내부 여백 */
-            margin: 20px auto 0px auto;
-            margin-top: 60px;
-            /* 박스의 상단 여백 */
-            display: block;
+            margin: 20px auto;
+            margin-top: 90px;
+            display: flex;
+            flex-direction: column;
             justify-content: space-between;
-            /* 좌우 정렬 */
-            align-items: flex-start;
-            /* 상단 정렬 */
+            box-shadow: 0px 0px 3px 0px #dc3545 ;
+            border-radius: 5px;
         }
 
         .box h2 {
             margin: 0;
-            /* 기본 여백 제거 */
-            font-size: 24px;
-            /* 제목 크기 조정 */
-        }
-
-        /* 버튼 스타일 */
-        .box button {
-            margin-left: auto;
-            /* 버튼을 오른쪽으로 이동 */
-            padding: 10px 20px;
-            /* 버튼의 패딩을 키워 크기 증가 */
-            font-size: 16px;
-            /* 버튼의 글자 크기 증가 */
-            border: 1px solid #000;
-            /* 버튼 테두리 */
-            border-radius: 5px;
-            /* 버튼 모서리 둥글게 */
-            cursor: pointer;
-            /* 마우스 커서 포인터로 변경 */
+            font-size: 30px;
+            text-align: center;
         }
 
         .member-list {
             margin-top: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-wrap: wrap; /* 멤버 항목들이 줄 바꿈되도록 */
+            justify-content: space-between; /* 각 멤버 항목을 좌우로 배치 */
+            gap: 20px; /* 항목 간의 간격 */
+            width: 100%;
         }
 
         .member {
             background-color: #fff;
-            padding: 10px;
+            padding: 15px;
             border: 1px solid #ddd;
-            margin-bottom: 10px;
             text-align: left;
-            /* 텍스트 왼쪽 정렬 */
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            width: 45%;
+            box-sizing: border-box;
         }
 
         .member h3 {
             margin: 0;
-            font-size: 18px;
+            font-size: 25px;
+        }
+
+        .delete-checkbox {
+            width: 25px;
+            height: 25px;
+        }
+
+        .delete-btn-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .box button {
+            padding: 15px 25px;
+            font-size: 25px;s
+            border-radius: 5px;
+            cursor: pointer;
+            width: auto;
+            height: auto;
         }
     </style>
     <script type="module">
         // Firebase SDK 라이브러리 가져오기
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-        import { collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getFirestore, doc, deleteDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
         // Firebase 설정
         const firebaseConfig = {
@@ -161,34 +149,62 @@
                 const memberDiv = document.createElement("div");
                 memberDiv.classList.add("member");
 
-                // 이름만 출력하도록 수정
-                memberDiv.innerHTML = `
+                // 체크박스와 함께 멤버 이름을 표시
+                memberDiv.innerHTML = ` 
+                    <input type="checkbox" class="delete-checkbox" data-id="${doc.id}">
                     <h3>${member.name}</h3>
                 `;
 
                 memberListContainer.appendChild(memberDiv);
             });
         };
+
+        // 선택된 멤버 삭제
+        async function deleteSelectedMembers() {
+            const selectedCheckboxes = document.querySelectorAll(".delete-checkbox:checked");
+            if (selectedCheckboxes.length === 0) {
+                alert("삭제할 멤버를 선택해주세요.");
+                return;
+            }
+
+            // 삭제 확인
+            const confirmDelete = confirm("선택한 멤버를 삭제하시겠습니까?");
+            if (!confirmDelete) return;
+
+            selectedCheckboxes.forEach(async (checkbox) => {
+                const docId = checkbox.getAttribute("data-id");
+                // Firestore에서 데이터 삭제
+                await deleteDoc(doc(db, "impomation", docId));
+                // DOM에서 해당 멤버 삭제
+                checkbox.closest(".member").remove();
+            });
+        }
+
+        // 삭제 버튼 클릭 시 삭제 실행
+        document.querySelector("button").addEventListener("click", deleteSelectedMembers);
     </script>
 </head>
 
 <body>
     <nav>
-        <nav>
-            <a href="mainpage.html"> <img
-                    src="https://cdn-upload.miniintern.com/42581/3091d6df-ce33-498d-a1cb-32b0d5473655/teamspartalogomain.png"
-                    alt="이모티콘" class="emoji"> 스파르타위키</a>
-        </nav>
+        <a href="mainpage.html"> <img src="https://cdn-upload.miniintern.com/42581/3091d6df-ce33-498d-a1cb-32b0d5473655/teamspartalogomain.png"
+                alt="이모티콘" class="emoji"> 스파르타위키</a>
     </nav>
+
     <!-- 멤버 리스트 박스 -->
     <div class="box">
-        <h2>멤버 리스트</h2>
-        <button type="button" class="btn btn-outline-dark">삭제하기</button>
+        <h2><멤버 리스트></h2>
 
         <!-- 멤버 리스트를 표시할 영역 -->
         <div id="member-list" class="member-list"></div>
-    </div>
 
+        <!-- 삭제 버튼을 하단 중앙으로 이동 -->
+        <div class="delete-btn-container">
+            <div class="mybtn">
+                <button id="postbtn" type="button" class="btn btn-danger">삭제하기</button>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
