@@ -99,22 +99,24 @@
     <script type="module">
         // Firebase SDK 라이브러리 가져오기
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getFirestore, collection, query, getDocs, where, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 
-        // Firebase 구성
+        // Firebase 설정
         const firebaseConfig = {
-            apiKey: "AIzaSyBAvytCDn6UO51ZReRAqJaWTKZtBPMFI-A",
-            authDomain: "sparta-2b738.firebaseapp.com",
-            projectId: "sparta-2b738",
-            storageBucket: "sparta-2b738.firebasestorage.app",
-            messagingSenderId: "481874362568",
-            appId: "1:481874362568:web:a1b01807f7fa3d62eda5fd",
-            measurementId: "G-FJ8CX7F0Z5"
+            apiKey: "AIzaSyCptMKJA8PpicVg_2CEUMOabzkKZh0TSO8",
+            authDomain: "sparta-4c7c8.firebaseapp.com",
+            projectId: "sparta-4c7c8",
+            storageBucket: "sparta-4c7c8.firebasestorage.app",
+            messagingSenderId: "862085335374",
+            appId: "1:862085335374:web:8fdb68b78914892552f61f",
+            measurementId: "G-NF8D0H7X6C"
         };
 
-        // Firebase 초기화
+        // Firebase 앱 초기화
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const storage = getStorage(app);
 
         // 검색된 데이터를 보여주는 함수
         async function searchData(queryText) {
