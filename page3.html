@@ -7,7 +7,7 @@
     <title>pg3</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gowun+Dodum&display=swap');
@@ -58,9 +58,9 @@
         .mypostingboxs {
 
             width: 500px;
-            margin: 300px auto 20px auto;
+            margin: 100px auto 20px auto;
             padding: 20px;
-            box-shadow: 0px 0px 3px 0px #dc3545 ;
+            box-shadow: 0px 0px 3px 0px #dc3545;
             border-radius: 5px;
         }
 
@@ -74,53 +74,105 @@
         .mybtn>button {
             margin-right: 5px;
         }
+
+        .thumbnail {
+            margin-bottom: 20px;
+        }
+
+        .img-preview {
+            margin-top: 20px;
+            max-width: 300px;
+            max-height: 300px;
+            object-fit: cover;
+        }
     </style>
 
     <script type="module">
-        // Firebase SDK 라이브러리 가져오기
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-        import { collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-        import { getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 
-
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        // Firebase 설정
         const firebaseConfig = {
-            apiKey: "AIzaSyBAvytCDn6UO51ZReRAqJaWTKZtBPMFI-A",
-            authDomain: "sparta-2b738.firebaseapp.com",
-            projectId: "sparta-2b738",
-            storageBucket: "sparta-2b738.firebasestorage.app",
-            messagingSenderId: "481874362568",
-            appId: "1:481874362568:web:a1b01807f7fa3d62eda5fd",
-            measurementId: "G-FJ8CX7F0Z5"
+            apiKey: "AIzaSyCptMKJA8PpicVg_2CEUMOabzkKZh0TSO8",
+            authDomain: "sparta-4c7c8.firebaseapp.com",
+            projectId: "sparta-4c7c8",
+            storageBucket: "sparta-4c7c8.firebasestorage.app",
+            messagingSenderId: "862085335374",
+            appId: "1:862085335374:web:8fdb68b78914892552f61f",
+            measurementId: "G-NF8D0H7X6C"
         };
 
-        // Firebase 인스턴스 초기화
+        // Firebase 앱 초기화
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
 
+        // Firestore 및 Storage 초기화
+        const db = getFirestore(app);
+        const storage = getStorage(app);  // 이 부분이 없으면 'storage is not defined' 에러가 발생합니다.
+
+    
+        // 버튼 클릭 이벤트 처리
         $("#postbtn").click(async function () {
             let name = $('#name').val();
             let age = $('#age').val();
             let gender = $('#gender').val();
             let hobby = $('#hobby').val();
             let speciality = $('#speciality').val();
+            let tmi = $('#tmi').val();
 
-            let doc = {
-                'name': name,
-                'age': age,
-                'gender': gender,
-                'hobby': hobby,
-                'speciality': speciality
+            // 파일이 선택되었는지 확인
+            let fileInput = $('#image')[0];
+            if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                alert('사진을 선택하세요');
+                return;
+            }
+
+            let file = fileInput.files[0];  // 첫 번째 파일 가져오기
+
+
+            // 이미지 업로드 함수
+            const uploadImage = (file) => {
+                return new Promise((resolve, reject) => {
+                    // Firebase Storage에서 'images/'라는 폴더에 파일 참조 생성
+                    const storageRef = ref(storage, 'images/' + file.name);
+
+                    // 파일 업로드
+                    uploadBytes(storageRef, file).then((snapshot) => {
+                        // 업로드가 완료되면 해당 파일의 다운로드 URL을 반환
+                        getDownloadURL(snapshot.ref).then((url) => {
+                            resolve(url);
+                        }).catch(reject);
+                    }).catch(reject);
+                });
             };
-            await addDoc(collection(db, "impomation"), doc);
-            alert('등록완료');
-            window.location.reload();
-        })
 
+
+            try {
+                // 이미지 업로드
+                const imageUrl = await uploadImage(file);
+
+                // Firestore에 데이터 저장
+                const doc = {
+                    'name': name,
+                    'age': age,
+                    'gender': gender,
+                    'hobby': hobby,
+                    'speciality': speciality,
+                    'tmi': tmi,
+                    'imageUrl': imageUrl  // 업로드된 이미지의 URL 저장
+                };
+
+                // Firestore에 문서 추가
+                await addDoc(collection(db, "impomation"), doc);
+
+                alert('등록완료');
+                window.location.reload();
+            } catch (error) {
+                console.error("Error uploading image or saving data:", error);
+                alert('업로드 또는 데이터 저장 중 오류가 발생했습니다.');
+            }
+        });
     </script>
-
-
 </head>
 
 <body>
@@ -135,8 +187,13 @@
         </nav>
     </nav>
     <div class="mypostingboxs" id="postingbox">
+        <div class="mb-3">
+            <label for="formFile" class="form-label">사진을 선택하세요</label>
+            <input class="form-control" type="file" id="image">
+        </div>
+
         <div class="form-floating mb-3">
-            <input type="email" class="form-control" id="name" placeholder="이름" >
+            <input type="email" class="form-control" id="name" placeholder="이름">
             <label for="name">이름</label>
         </div>
         <div class="form-floating mb-3">
@@ -144,7 +201,7 @@
             <label for="age">나이</label>
         </div>
         <div class="form-floating mb-3">
-            <input type="email" class="form-control" id="gender" placeholder="성별" >  
+            <input type="email" class="form-control" id="gender" placeholder="성별">
             <label for="gender">성별</label>
         </div>
         <div class="form-floating mb-3">
@@ -154,6 +211,10 @@
         <div class="form-floating mb-3">
             <input type="email" class="form-control" id="speciality" placeholder="특기">
             <label for="speciality">특기</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="tmi" placeholder="특기">
+            <label for="tmi">TMI</label>
         </div>
         <div class="mybtn">
             <button id="postbtn" type="button" class="btn btn-danger">등록하기</button>
